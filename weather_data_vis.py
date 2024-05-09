@@ -1,4 +1,7 @@
 def main_menu():
+    """
+    Displays the main menu options for the weather visualization tool.
+    """
     print("Select the type of weather visualization:")
     print("1. Current Weather and Map")
     print("2. Historical Temperature Trends")
@@ -19,6 +22,15 @@ def main_menu():
     return choice
 
 def run_selected_option(choice):
+
+    """
+    Executes the selected menu option by invoking specific functions
+    or actions based on the user's choice.
+    
+    Parameters:
+        choice (int): A number representing the selected menu option.
+    """
+
     if choice == 1:
 
         import requests
@@ -37,6 +49,16 @@ def run_selected_option(choice):
         }
 
         def get_coordinates(city, api_key):
+            """
+            Retrieves the latitude and longitude coordinates of a city.
+
+            Parameters:
+                city (str): The city name to retrieve coordinates for.
+                api_key (str): The API key for accessing the OpenWeatherMap API.
+
+            Returns:
+                tuple: A tuple containing the latitude and longitude of the city.
+            """
             geocoding_url = f"http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={api_key}"
             response = requests.get(geocoding_url)
             data = response.json()
@@ -46,6 +68,17 @@ def run_selected_option(choice):
                 return None, None
 
         def create_weather_map(lat, lon, city, description, temperature):
+
+            """
+            Creates an interactive map with the current weather information.
+
+            Parameters:
+                lat (float): Latitude of the city.
+                lon (float): Longitude of the city.
+                city (str): Name of the city.
+                description (str): Weather description.
+                temperature (float): Current temperature in Celsius.
+            """
             map = folium.Map(location=[lat, lon], zoom_start=12, tiles='OpenStreetMap')
             tooltip_text = f"Current weather in {city}: {description}, {temperature}°C"
             folium.Marker(
@@ -96,6 +129,17 @@ def run_selected_option(choice):
         import matplotlib.dates as mdates
 
         def get_coordinates(city, api_key):
+            """
+    Retrieves the latitude and longitude coordinates for a specified city using the OpenWeatherMap Geocoding API.
+
+    Parameters:
+        city (str): The city name for which coordinates are required.
+        api_key (str): The API key for accessing the OpenWeatherMap API.
+
+    Returns:
+        tuple: A tuple containing the latitude and longitude of the city, or (None, None) if no data is found.
+    """
+            
             """Get latitude and longitude for a given city using OpenWeatherMap's Geocoding API."""
             geocode_url = f"http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={api_key}"
             response = requests.get(geocode_url)
@@ -106,10 +150,34 @@ def run_selected_option(choice):
                 return None, None
 
         def kelvin_to_fahrenheit(kelvin_temp):
+
+            """
+    Converts a temperature from Kelvin to Fahrenheit.
+
+    Parameters:
+        kelvin_temp (float): The temperature in Kelvin.
+
+    Returns:
+        float: The temperature converted to Fahrenheit.
+    """
             """Converts Kelvin temperature to Fahrenheit."""
             return (kelvin_temp - 273.15) * 9/5 + 32
 
         def fetch_weather_data(lat, lon, num_days, api_key):
+
+            """
+    Fetches historical weather data for a specific latitude and longitude from the OpenWeatherMap One Call API.
+
+    Parameters:
+        lat (float): Latitude of the location.
+        lon (float): Longitude of the location.
+        num_days (int): Number of past days to fetch data for.
+        api_key (str): The API key for accessing the OpenWeatherMap API.
+
+    Returns:
+        tuple: Two lists containing dates and corresponding temperatures in Fahrenheit.
+    """
+            
             """Fetches historical weather data using the OpenWeatherMap One Call API."""
             current_time = datetime.now(timezone.utc)
             temps, dates = [], []
@@ -131,6 +199,15 @@ def run_selected_option(choice):
             return dates, temps
 
         def plot_temperature_trends(dates, temps):
+
+            """
+    Plots temperature trends over a series of dates.
+
+    Parameters:
+        dates (list of datetime): The dates for the temperature data.
+        temps (list of float): The temperatures corresponding to the dates.
+    """
+            
             """Plots temperature trends."""
             if not temps:
                 print("Temperature data is empty.")
@@ -174,6 +251,18 @@ def run_selected_option(choice):
         import matplotlib.dates as mdates
 
         def get_coordinates(city, api_key):
+
+            """
+    Retrieves the latitude and longitude for a specified city using the OpenWeatherMap Geocoding API.
+
+    Parameters:
+        city (str): The name of the city for which to get coordinates.
+        api_key (str): Your OpenWeatherMap API key.
+
+    Returns:
+        tuple: A tuple containing the latitude and longitude of the city, or (None, None) if the city is not found.
+    """
+            
             """Get latitude and longitude for a given city using OpenWeatherMap's Geocoding API."""
             geocode_url = f"http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={api_key}"
             response = requests.get(geocode_url)
@@ -185,6 +274,20 @@ def run_selected_option(choice):
                 return None, None
 
         def fetch_weather_data(lat, lon, num_days, api_key):
+
+            """
+    Fetches forecast weather data for a given latitude and longitude from the OpenWeatherMap One Call API.
+
+    Parameters:
+        lat (float): Latitude of the location.
+        lon (float): Longitude of the location.
+        num_days (int): Number of days to fetch weather data for, limited to 8 days.
+        api_key (str): Your OpenWeatherMap API key.
+
+    Returns:
+        list: A list of daily weather data for the specified number of days.
+    """
+            
             """Fetches forecast weather data using the OpenWeatherMap One Call API."""
             url = f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,current,alerts&appid={api_key}&units=metric"
             response = requests.get(url)
@@ -192,6 +295,15 @@ def run_selected_option(choice):
             return data['daily'][:num_days]  # Return only the number of days requested by the user
 
         def plot_precipitation_and_events(daily_data):
+
+            """
+    Plots the probability of precipitation and significant weather events over a series of dates.
+
+    Parameters:
+        daily_data (list): A list of daily weather data including precipitation probabilities and weather conditions.
+    """
+            
+
             """Plots precipitation and weather events."""
             dates = [datetime.fromtimestamp(day['dt']) for day in daily_data]
             precipitation = [day['pop'] * 100 for day in daily_data]  # Probability of precipitation in %
@@ -255,6 +367,19 @@ def run_selected_option(choice):
         from datetime import datetime
 
         def get_coordinates(city, api_key):
+
+            """
+    Retrieves the latitude and longitude for a specified city using the OpenWeatherMap Geocoding API.
+
+    Parameters:
+        city (str): The name of the city for which to get coordinates.
+        api_key (str): Your OpenWeatherMap API key.
+
+    Returns:
+        tuple: A tuple containing the latitude and longitude of the city, or (None, None) if the city is not found.
+    """
+            
+
             """Get latitude and longitude for a given city using OpenWeatherMap's Geocoding API."""
             geocode_url = f"http://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={api_key}"
             response = requests.get(geocode_url)
@@ -266,6 +391,21 @@ def run_selected_option(choice):
                 return None, None
 
         def fetch_weather_data(lat, lon, num_days, api_key):
+
+            """
+    Fetches forecast weather data for a given latitude and longitude from the OpenWeatherMap One Call API.
+
+    Parameters:
+        lat (float): Latitude of the location.
+        lon (float): Longitude of the location.
+        num_days (int): Number of days to fetch weather data for, limited to 8 days.
+        api_key (str): Your OpenWeatherMap API key.
+
+    Returns:
+        list: A list of daily weather data for the specified number of days.
+    """
+            
+
             """Fetches forecast weather data using the OpenWeatherMap One Call API."""
             url = f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly,current,alerts&appid={api_key}&units=metric"
             response = requests.get(url)
@@ -273,6 +413,15 @@ def run_selected_option(choice):
             return data['daily'][:num_days]  # Return only the number of days requested by the user
 
         def plot_wind_speed_and_direction(daily_data):
+
+            """
+    Plots wind speed and direction on a polar chart for a series of days.
+
+    Parameters:
+        daily_data (list): A list of daily weather data including wind speed and direction.
+    """
+            
+            
             """Plots wind speed and direction on a polar chart."""
             fig = plt.figure(figsize=(10, 8))
             ax = fig.add_subplot(111, polar=True)
